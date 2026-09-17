@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#2B2463">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="FAMTIMIS">
+<link rel="manifest" id="pwa-manifest" href="">
+<title>FAMTIMIS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;overflow:hidden;background:#2B2463}
+body{font-family:'Nunito',system-ui,sans-serif;color:#1C1833}
+
+/* ── SETUP ─────────────────────────────────────── */
+#scr-setup{position:fixed;inset:0;background:#F0EEF8;display:flex;flex-direction:column;align-items:center;overflow-y:auto;padding:28px 18px 48px}
+.s-logo{width:78px;height:78px;border-radius:22px;background:#2B2463;display:flex;align-items:center;justify-content:center;font-size:36px;font-weight:900;color:#B0A8FF;margin-bottom:10px;flex-shrink:0;letter-spacing:-1px}
+.s-name{font-size:26px;font-weight:900;color:#2B2463;letter-spacing:2px;margin-bottom:4px}
+.s-sub{font-size:13px;color:#8888AA;text-align:center;line-height:1.6;margin-bottom:24px}
+.s-card{background:#fff;border-radius:18px;padding:18px;width:100%;max-width:440px;margin-bottom:14px;box-shadow:0 2px 10px rgba(43,36,99,.08)}
+.s-card h2{font-size:13px;font-weight:800;color:#2B2463;margin-bottom:12px;letter-spacing:.3px}
+.s-step{display:flex;gap:11px;margin-bottom:14px}
+.s-step:last-child{margin-bottom:0}
+.s-num{width:26px;height:26px;border-radius:50%;background:#2B2463;color:#B0A8FF;font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.s-step h3{font-size:13px;font-weight:800;color:#1C1833;margin-bottom:3px}
+.s-step p{font-size:12px;color:#6666AA;line-height:1.6}
+.s-step a{color:#2B2463;font-weight:700;word-break:break-all}
+.s-step code{font-size:11px;background:#F0EEF8;padding:1px 5px;border-radius:5px}
+.s-form{background:#fff;border-radius:18px;padding:18px;width:100%;max-width:440px;margin-bottom:14px;box-shadow:0 2px 10px rgba(43,36,99,.08)}
+.sf-lbl{display:block;font-size:10px;font-weight:800;color:#AAAABF;letter-spacing:.8px;text-transform:uppercase;margin-bottom:5px}
+.sf-in{width:100%;padding:10px 12px;border:1.5px solid #E4E0F4;border-radius:11px;font-family:inherit;font-size:14px;color:#1C1833;outline:none;background:#F8F7FF;transition:border-color .15s}
+.sf-in:focus{border-color:#2B2463;background:#fff}
+.sf-hint{font-size:11px;color:#AAAABF;margin-top:4px}
+.sf-err{font-size:11px;color:#DC2626;margin-top:4px;display:none}
+.sf-gap{margin-bottom:13px}
+.sf-lang{display:flex;gap:8px;margin-top:5px}
+.sf-lb{flex:1;padding:10px;border:1.5px solid #E4E0F4;border-radius:11px;font-family:inherit;font-size:14px;font-weight:700;cursor:pointer;background:#F8F7FF;color:#6666AA;transition:all .15s}
+.sf-lb.on{border-color:#2B2463;background:#2B2463;color:#fff}
+.s-btn{display:block;width:100%;max-width:440px;padding:15px;background:#2B2463;color:#B0A8FF;border:none;border-radius:14px;font-family:inherit;font-size:16px;font-weight:900;cursor:pointer;letter-spacing:.8px;transition:opacity .15s;margin-bottom:10px}
+.s-btn:hover{opacity:.88}
+.s-already{font-size:12px;color:#AAAABF;text-align:center;display:none}
+.s-already button{background:none;border:none;color:#2B2463;font-family:inherit;font-size:12px;font-weight:700;cursor:pointer}
+
+/* ── MAIN APP ───────────────────────────────────── */
+#scr-app{position:fixed;inset:0;display:flex;flex-direction:column;background:#F0EEF8;overflow:hidden}
+
+.app-hdr{background:#2B2463;color:#fff;padding:12px 15px;padding-top:calc(12px + env(safe-area-inset-top));display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.hdr-left{display:flex;align-items:center;gap:9px}
+.hdr-name{font-size:16px;font-weight:900;color:#fff;letter-spacing:1.5px}
+.hdr-name span{color:#B0A8FF}
+.sync-dot{width:8px;height:8px;border-radius:50%;transition:background .4s;flex-shrink:0}
+.hdr-right{display:flex;align-items:center;gap:7px}
+.hdr-btn{background:rgba(255,255,255,.14);border:none;color:#fff;padding:5px 11px;border-radius:20px;font-family:inherit;font-size:12px;font-weight:700;cursor:pointer}
+.hdr-ico{background:rgba(255,255,255,.14);border:none;color:#fff;width:30px;height:30px;border-radius:50%;font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+
+.app-cnt{flex:1;overflow-y:auto;padding:13px 13px 80px;-webkit-overflow-scrolling:touch}
+
+.app-nav{position:absolute;bottom:0;left:0;right:0;background:#fff;display:flex;border-top:0.5px solid rgba(0,0,0,.08);padding:5px 4px;padding-bottom:calc(5px + env(safe-area-inset-bottom));box-shadow:0 -2px 12px rgba(43,36,99,.08)}
+.nav-btn{flex:1;border:none;cursor:pointer;padding:7px 4px 5px;display:flex;flex-direction:column;align-items:center;gap:2px;font-family:inherit;border-radius:12px;transition:background .15s}
+.nav-ico{font-size:21px;line-height:1}
+.nav-lbl{font-size:10px;font-weight:800;letter-spacing:.3px}
+
+.fab{position:absolute;bottom:calc(66px + env(safe-area-inset-bottom));right:15px;width:50px;height:50px;border-radius:25px;border:none;color:#fff;font-size:26px;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 16px rgba(0,0,0,.24);z-index:10;transition:transform .12s}
+.fab:active{transform:scale(.91)}
+
+/* ── OVERLAY ────────────────────────────────────── */
+#app-ov{position:absolute;inset:0;z-index:50;display:none}
+.ov-bg{position:absolute;inset:0;background:rgba(28,24,51,.5);display:flex;align-items:flex-end}
+.modal{background:#fff;border-radius:22px 22px 0 0;padding:20px 20px;padding-bottom:calc(28px + env(safe-area-inset-bottom));width:100%}
+.modal-title{font-size:16px;font-weight:900;color:#1C1833;margin-bottom:15px}
+.fld{margin-bottom:11px}
+.fld label{display:block;font-size:10px;font-weight:800;color:#AAAABF;letter-spacing:.8px;text-transform:uppercase;margin-bottom:4px}
+.fld input,.fld textarea{width:100%;padding:10px 12px;border:1.5px solid #E4E0F4;border-radius:11px;font-family:inherit;font-size:14px;color:#1C1833;outline:none;background:#F8F7FF;transition:border-color .15s}
+.fld input:focus,.fld textarea:focus{border-color:#2B2463;background:#fff}
+.fld textarea{resize:none;height:80px;line-height:1.4}
+.fld-row{display:flex;gap:8px}.fld-row .fld{flex:1}
+.m-btns{display:flex;gap:8px;margin-top:15px}
+.btn-ok{flex:1;border:none;border-radius:11px;padding:12px;font-family:inherit;font-size:15px;font-weight:800;cursor:pointer;color:#fff}
+.btn-cancel{flex:1;background:#F0EEF8;color:#6666AA;border:none;border-radius:11px;padding:12px;font-family:inherit;font-size:15px;font-weight:700;cursor:pointer}
+
+/* ── CARDS ──────────────────────────────────────── */
+.card{background:#fff;border-radius:16px;padding:14px;margin-bottom:10px;position:relative;box-shadow:0 1px 6px rgba(43,36,99,.07)}
+.card-x{position:absolute;top:10px;right:10px;width:24px;height:24px;border:none;background:none;cursor:pointer;color:#AAAABF;font-size:13px;border-radius:50%;display:flex;align-items:center;justify-content:center;transition:color .15s,background .15s}
+.card-x:hover{color:#DC2626;background:#FEE2E2}
+.card-title{font-size:14px;font-weight:800;color:#1C1833;padding-right:26px;line-height:1.3}
+.card-body{font-size:13px;color:#6666AA;margin-top:5px;line-height:1.5;white-space:pre-wrap;word-break:break-word}
+.card-ts{font-size:11px;color:#AAAABF;margin-top:6px}
+.badge{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:800;padding:3px 9px;border-radius:10px;margin-bottom:5px;color:#fff}
+.sec-sep{font-size:10px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:#AAAABF;text-align:center;padding:5px 0;border-top:0.5px solid #E4E0F4;border-bottom:0.5px solid #E4E0F4;margin:8px 0}
+
+/* ── SHOPPING ───────────────────────────────────── */
+.shop-row{display:flex;align-items:center;gap:10px;background:#fff;border-radius:14px;padding:12px 13px;margin-bottom:8px;box-shadow:0 1px 6px rgba(43,36,99,.06)}
+.shop-row.done{opacity:.5}
+.shop-row.done .shop-name{text-decoration:line-through;color:#AAAABF}
+.chk{width:24px;height:24px;border-radius:7px;border:2px solid #D4D0E8;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:900;color:transparent;transition:all .15s;user-select:none}
+.chk.on{background:#7B3FA8;border-color:#7B3FA8;color:#fff}
+.shop-name{flex:1;font-size:14px;font-weight:700;color:#1C1833;word-break:break-word}
+.shop-x{border:none;background:none;cursor:pointer;color:#AAAABF;font-size:14px;flex-shrink:0;padding:4px;transition:color .15s}
+.shop-x:hover{color:#DC2626}
+.clear-btn{display:inline-flex;align-items:center;gap:5px;background:none;border:1px solid #D4D0E8;color:#6666AA;padding:6px 12px;border-radius:20px;font-family:inherit;font-size:12px;font-weight:700;cursor:pointer;margin-bottom:10px}
+.clear-btn:hover{border-color:#DC2626;color:#DC2626}
+
+/* ── EMPTY / SETTINGS ───────────────────────────── */
+.empty{text-align:center;padding:40px 20px;color:#AAAABF;font-size:14px;line-height:1.8;white-space:pre-line}
+.empty-ico{font-size:36px;display:block;margin-bottom:8px}
+.set-row{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:0.5px solid #F0EEF8}
+.set-row:last-of-type{border:none}
+.set-lbl{font-size:14px;font-weight:700;color:#1C1833}
+.set-val{font-size:12px;color:#6666AA;max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:right}
+.set-danger{color:#DC2626;font-weight:800;font-size:14px;background:none;border:none;cursor:pointer;font-family:inherit;width:100%;text-align:left;padding:12px 0 4px}
+
+/* ── TOAST ──────────────────────────────────────── */
+.toast{position:fixed;bottom:calc(80px + env(safe-area-inset-bottom));left:50%;transform:translateX(-50%) translateY(10px);background:#1C1833;color:#fff;padding:8px 18px;border-radius:20px;font-size:13px;font-weight:700;z-index:200;pointer-events:none;white-space:nowrap;opacity:0;transition:opacity .2s,transform .2s}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+</style>
+</head>
+<body>
+
+<!-- ══ SETUP SCREEN ══════════════════════════════════════════════════════ -->
+<div id="scr-setup" style="display:none">
+  <div class="s-logo">F</div>
+  <div class="s-name">FAMTIMIS</div>
+  <div class="s-sub">App di famiglia condivisa<br>Appunti · Agenda · Spesa</div>
+
+  <div class="s-card">
+    <h2>📋 COME CONFIGURARE (una sola volta)</h2>
+    <div class="s-step">
+      <div class="s-num">1</div>
+      <div>
+        <h3>Crea il database gratuito</h3>
+        <p>Vai su <a href="https://console.firebase.google.com" target="_blank">console.firebase.google.com</a><br>
+        → <b>Aggiungi progetto</b> → nome <code>famtimis</code> → continua (Analytics: off) → <b>Crea progetto</b>.</p>
+      </div>
+    </div>
+    <div class="s-step">
+      <div class="s-num">2</div>
+      <div>
+        <h3>Attiva il Realtime Database</h3>
+        <p>Nel menu sinistra → <b>Build → Realtime Database → Crea database → Europa → Modalità test → Fine</b>.<br>
+        Poi <b>Regole</b> → sostituisci tutto con:<br>
+        <code>{ "rules": { ".read": true, ".write": true } }</code> → <b>Pubblica</b>.</p>
+      </div>
+    </div>
+    <div class="s-step">
+      <div class="s-num">3</div>
+      <div>
+        <h3>Copia l'URL del database</h3>
+        <p>In cima alla pagina vedi qualcosa come:<br>
+        <code>https://famtimis-abc12-default-rtdb.europe-west1.firebasedatabase.app</code><br>
+        Copia quell'URL e incollalo qui sotto.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="s-form">
+    <div class="sf-gap">
+      <label class="sf-lbl">URL Database Firebase</label>
+      <input class="sf-in" id="sf-url" type="url" placeholder="https://famtimis-…firebasedatabase.app" autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false">
+      <div class="sf-hint">Copia l'URL dalla console Firebase (Realtime Database)</div>
+      <div class="sf-err" id="sf-url-err">Inserisci l'URL del database Firebase (deve contenere firebasedatabase.app o firebaseio.com)</div>
+    </div>
+    <div class="sf-gap">
+      <label class="sf-lbl">Codice famiglia</label>
+      <input class="sf-in" id="sf-code" type="text" placeholder="es. TIMIS2025" autocomplete="off" autocorrect="off" autocapitalize="characters" maxlength="30">
+      <div class="sf-hint">Parola segreta condivisa con la famiglia — tutti devono inserire lo stesso codice</div>
+      <div class="sf-err" id="sf-code-err">Inserisci un codice di almeno 4 caratteri</div>
+    </div>
+    <div class="sf-gap">
+      <label class="sf-lbl">Lingua predefinita</label>
+      <div class="sf-lang">
+        <button class="sf-lb on" id="sf-it" onclick="setSetupLang('it')">🇮🇹 Italiano</button>
+        <button class="sf-lb" id="sf-ro" onclick="setSetupLang('ro')">🇷🇴 Română</button>
+      </div>
+    </div>
+  </div>
+
+  <button class="s-btn" onclick="doSetup()">Inizia →</button>
+  <div class="s-already" id="s-already">
+    Già configurato? <button onclick="showReset()">Modifica configurazione</button>
+  </div>
+</div>
+
+<!-- ══ MAIN APP ═══════════════════════════════════════════════════════════ -->
+<div id="scr-app" style="display:none">
+  <div class="app-hdr">
+    <div class="hdr-left">
+      <span class="sync-dot" id="sync-dot" style="background:#4ADE80"></span>
+      <span class="hdr-name">FAM<span>TIMIS</span></span>
+    </div>
+    <div class="hdr-right">
+      <button class="hdr-btn" id="lang-btn" onclick="toggleLang()">🇷🇴 RO</button>
+      <button class="hdr-ico" onclick="openModal('settings')" title="Impostazioni">⚙</button>
+    </div>
+  </div>
+  <div class="app-cnt" id="app-cnt"></div>
+  <nav class="app-nav" id="app-nav"></nav>
+  <button class="fab" id="fab" onclick="openModal(S.tab)">＋</button>
+  <div id="app-ov"></div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ── TRANSLATIONS ───────────────────────────────────────────────────────────
+const TR = {
+  it:{notes:'Appunti',agenda:'Agenda',shop:'Spesa',new_note:'Nuovo appunto',new_appt:'Nuovo appuntamento',new_item:'Aggiungi articoli',t_note:'Titolo',t_appt:'Evento',t_date:'Data',t_time:'Ora',t_who:'Chi partecipa',t_txt:'Testo opzionale...',save:'Salva',cancel:'Annulla',add:'＋ Aggiungi',close:'Chiudi',clear:'Elimina spuntati',past:'Passati',checked:'Spuntati',today:'Oggi',tomorrow:'Domani',en:'Nessun appunto.\nTocca ＋ per aggiungere.',ea:'Nessun appuntamento.\nTocca ＋ per aggiungere.',es:'Lista vuota.\nTocca ＋ per aggiungere.',sett:'Impostazioni',s_db:'Database',s_code:'Codice famiglia',s_reset:'⚠ Disconnetti (reimposta)',s_offline:'⚠ Offline — dati in cache',s_ok:'Online'},
+  ro:{notes:'Notițe',agenda:'Agendă',shop:'Cumpărături',new_note:'Notiță nouă',new_appt:'Programare nouă',new_item:'Adaugă produse',t_note:'Titlu',t_appt:'Eveniment',t_date:'Dată',t_time:'Oră',t_who:'Cine participă',t_txt:'Text opțional...',save:'Salvează',cancel:'Anulează',add:'＋ Adaugă',close:'Gata',clear:'Elimină bifate',past:'Trecute',checked:'Bifate',today:'Azi',tomorrow:'Mâine',en:'Nicio notiță.\nApasă ＋ pentru a adăuga.',ea:'Nicio programare.\nApasă ＋ pentru a adăuga.',es:'Lista goală.\nApasă ＋ pentru a adăuga.',sett:'Setări',s_db:'Bază de date',s_code:'Cod familie',s_reset:'⚠ Deconectare (resetare)',s_offline:'⚠ Offline — date din cache',s_ok:'Online'}
+};
+
+// ── CONSTANTS ──────────────────────────────────────────────────────────────
+const FILL = {notes:'#1A78C9', appts:'#138A76', shop:'#7B3FA8'};
+const BGCT = {notes:'#EBF3FD', appts:'#E1F5EE', shop:'#F3EBFC'};
+const TXTC = {notes:'#1A78C9', appts:'#138A76', shop:'#7B3FA8'};
+
+// ── STATE ──────────────────────────────────────────────────────────────────
+let CFG = null;
+let setupLang = 'it';
+const S = {tab:'notes', lang:'it', notes:{}, appts:{}, shop:{}, modal:null, syncing:false, online:true};
+
+// ── UTILS ──────────────────────────────────────────────────────────────────
+const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2,6);
+const esc = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+const t = () => TR[S.lang];
+const loc = () => S.lang === 'it' ? 'it-IT' : 'ro-RO';
+function localDate(d){const o=d.getTimezoneOffset();return new Date(d-o*60000).toISOString().slice(0,10)}
+const today = () => localDate(new Date());
+const tomorrow = () => localDate(new Date(Date.now()+864e5));
+function fmtDate(d){
+  if(!d) return '';
+  if(d===today()) return t().today;
+  if(d===tomorrow()) return t().tomorrow;
+  return new Date(d+'T12:00:00').toLocaleDateString(loc(),{day:'2-digit',month:'short'});
+}
+function fmtTs(ts){return new Date(ts).toLocaleString(loc(),{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'})}
+
+// ── FIREBASE REST ──────────────────────────────────────────────────────────
+function fbUrl(path) {
+  const base = CFG.dbUrl.replace(/\/+$/,'');
+  const code = CFG.code.replace(/[^a-zA-Z0-9_-]/g,'');
+  return `${base}/famtimis/${code}${path ? '/'+path : ''}.json`;
+}
+async function fbGet(path='') {
+  const r = await fetch(fbUrl(path), {signal:AbortSignal.timeout(8000)});
+  if(!r.ok) throw new Error(r.status);
+  return r.json();
+}
+async function fbPut(path, data) {
+  const r = await fetch(fbUrl(path), {method:'PUT', signal:AbortSignal.timeout(8000), headers:{'Content-Type':'application/json'}, body:JSON.stringify(data)});
+  if(!r.ok) throw new Error(r.status);
+}
+async function fbPatch(path, data) {
+  await fetch(fbUrl(path), {method:'PATCH', signal:AbortSignal.timeout(8000), headers:{'Content-Type':'application/json'}, body:JSON.stringify(data)});
+}
+async function fbDel(path) {
+  await fetch(fbUrl(path), {method:'DELETE', signal:AbortSignal.timeout(8000)});
+}
+
+// ── CACHE ──────────────────────────────────────────────────────────────────
+function saveCache() {
+  try { localStorage.setItem('fam-data', JSON.stringify({notes:S.notes, appts:S.appts, shop:S.shop, lang:S.lang})); } catch{}
+}
+function loadCache() {
+  try {
+    const d = JSON.parse(localStorage.getItem('fam-data')||'{}');
+    if(d.notes) S.notes=d.notes; if(d.appts) S.appts=d.appts;
+    if(d.shop) S.shop=d.shop;   if(d.lang) S.lang=d.lang;
+  } catch{}
+}
+
+// ── SYNC ───────────────────────────────────────────────────────────────────
+async function syncAll() {
+  S.syncing = true; updateDot();
+  try {
+    const data = await fbGet();
+    if(data) {
+      if(data.notes && typeof data.notes==='object') S.notes=data.notes;
+      if(data.appts && typeof data.appts==='object') S.appts=data.appts;
+      if(data.shop  && typeof data.shop ==='object') S.shop =data.shop;
+      if(data.settings?.lang) S.lang=data.settings.lang;
+    }
+    S.online=true; saveCache();
+  } catch(e) { S.online=false; }
+  S.syncing=false; updateDot(); render();
+}
+function updateDot() {
+  const d=document.getElementById('sync-dot');
+  if(d) d.style.background = S.syncing?'#FBBF24': S.online?'#4ADE80':'#F87171';
+}
+
+// ── SETUP ──────────────────────────────────────────────────────────────────
+function setSetupLang(l) {
+  setupLang=l;
+  document.getElementById('sf-it').classList.toggle('on', l==='it');
+  document.getElementById('sf-ro').classList.toggle('on', l==='ro');
+}
+
+async function doSetup() {
+  const urlRaw = document.getElementById('sf-url').value.trim().replace(/\/+$/,'');
+  const code   = document.getElementById('sf-code').value.trim().toUpperCase().replace(/[^A-Z0-9_-]/g,'');
+  let ok = true;
+  const validDb = /firebasedatabase\.app|firebaseio\.com/.test(urlRaw) && urlRaw.startsWith('https://');
+  if(!validDb){ document.getElementById('sf-url-err').style.display='block'; ok=false; }
+  else document.getElementById('sf-url-err').style.display='none';
+  if(code.length<4){ document.getElementById('sf-code-err').style.display='block'; ok=false; }
+  else document.getElementById('sf-code-err').style.display='none';
+  if(!ok) return;
+
+  const btn = document.querySelector('.s-btn');
+  btn.textContent='Connessione...'; btn.disabled=true;
+  try {
+    const testUrl = `${urlRaw}/famtimis/${code}.json`;
+    const r = await fetch(testUrl, {signal:AbortSignal.timeout(6000)});
+    if(r.status===401||r.status===403) throw new Error('permission');
+  } catch(e) {
+    btn.textContent='Inizia →'; btn.disabled=false;
+    const msg = e.message==='permission'
+      ? 'Accesso negato — imposta le regole Firebase a true (vedi passo 2)'
+      : 'Impossibile connettersi — controlla l\'URL del database';
+    const errEl = document.getElementById('sf-url-err');
+    errEl.textContent=msg; errEl.style.display='block';
+    return;
+  }
+  CFG = {dbUrl:urlRaw, code, lang:setupLang};
+  localStorage.setItem('fam-cfg', JSON.stringify(CFG));
+  S.lang = setupLang;
+  btn.textContent='Inizia →'; btn.disabled=false;
+  bootApp();
+}
+
+function showReset() {
+  document.getElementById('sf-url').value = CFG?.dbUrl||'';
+  document.getElementById('sf-code').value = CFG?.code||'';
+}
+
+function resetApp() {
+  const msg = S.lang==='it'
+    ? 'Disconnettere questa famiglia? I dati locali verranno eliminati.'
+    : 'Deconectare familia? Datele locale vor fi șterse.';
+  if(!confirm(msg)) return;
+  localStorage.removeItem('fam-cfg');
+  localStorage.removeItem('fam-data');
+  Object.assign(S,{notes:{},appts:{},shop:{},tab:'notes',lang:'it',online:true});
+  CFG=null;
+  closeModal();
+  showSetup();
+}
+
+function showSetup() {
+  document.getElementById('scr-setup').style.display='flex';
+  document.getElementById('scr-app').style.display='none';
+  if(CFG) document.getElementById('s-already').style.display='block';
+}
+
+// ── BOOT ───────────────────────────────────────────────────────────────────
+function bootApp() {
+  document.getElementById('scr-setup').style.display='none';
+  document.getElementById('scr-app').style.display='flex';
+  loadCache(); render(); syncAll();
+  setInterval(syncAll, 15000);
+  document.addEventListener('visibilitychange', ()=>{ if(!document.hidden) syncAll(); });
+  setupPWA();
+}
+
+// ── PWA ────────────────────────────────────────────────────────────────────
+function setupPWA() {
+  try {
+    const c=document.createElement('canvas'); c.width=c.height=192;
+    const ctx=c.getContext('2d');
+    ctx.fillStyle='#2B2463';
+    if(ctx.roundRect) { ctx.beginPath(); ctx.roundRect(0,0,192,192,38); ctx.fill(); }
+    else { ctx.fillRect(0,0,192,192); }
+    ctx.fillStyle='#B0A8FF'; ctx.font='900 100px system-ui,sans-serif';
+    ctx.textAlign='center'; ctx.textBaseline='middle';
+    ctx.fillText('F',96,102);
+    const icon=c.toDataURL();
+    const m={name:'FAMTIMIS',short_name:'FAMTIMIS',start_url:'./',display:'standalone',theme_color:'#2B2463',background_color:'#F0EEF8',icons:[{src:icon,sizes:'192x192',type:'image/png'}]};
+    const blob=new Blob([JSON.stringify(m)],{type:'application/json'});
+    document.getElementById('pwa-manifest').href=URL.createObjectURL(blob);
+  } catch{}
+}
+
+// ── RENDER ─────────────────────────────────────────────────────────────────
+function render() {
+  document.getElementById('app-cnt').innerHTML = renderContent();
+  document.getElementById('app-nav').innerHTML = renderNav();
+  document.getElementById('fab').style.background = FILL[S.tab];
+  document.getElementById('lang-btn').textContent = S.lang==='it' ? '🇷🇴 RO' : '🇮🇹 IT';
+  updateDot();
+}
+
+function renderNav() {
+  const tr=t();
+  return [{k:'notes',i:'📝',l:tr.notes},{k:'appts',i:'📅',l:tr.agenda},{k:'shop',i:'🛒',l:tr.shop}]
+    .map(x=>`<button class="nav-btn" onclick="switchTab('${x.k}')" style="background:${S.tab===x.k?BGCT[x.k]:'transparent'}"><span class="nav-ico">${x.i}</span><span class="nav-lbl" style="color:${S.tab===x.k?TXTC[x.k]:'#AAAABF'}">${x.l}</span></button>`).join('');
+}
+
+function renderContent() {
+  const tr=t();
+  if(S.tab==='notes') {
+    const list=Object.entries(S.notes||{}).sort((a,b)=>b[1].ts-a[1].ts);
+    if(!list.length) return `<div class="empty"><span class="empty-ico">📝</span>${tr.en}</div>`;
+    return list.map(([id,n])=>`<div class="card"><button class="card-x" onclick="delNote('${id}')">✕</button><div class="card-title">${esc(n.title)}</div>${n.body?`<div class="card-body">${esc(n.body)}</div>`:''}<div class="card-ts">${fmtTs(n.ts)}</div></div>`).join('');
+  }
+  if(S.tab==='appts') {
+    const all=Object.entries(S.appts||{}).sort((a,b)=>a[1].date<b[1].date?-1:1);
+    if(!all.length) return `<div class="empty"><span class="empty-ico">📅</span>${tr.ea}</div>`;
+    const td=today();
+    const up=all.filter(([,a])=>a.date>=td), past=all.filter(([,a])=>a.date<td).reverse();
+    const row=([id,a],dim)=>`<div class="card"${dim?' style="opacity:.55"':''}><button class="card-x" onclick="delAppt('${id}')">✕</button><div><span class="badge" style="background:${dim?'#AAAABF':'#138A76'}">📅 ${fmtDate(a.date)}${a.time?' · '+a.time:''}</span></div><div class="card-title">${esc(a.title)}</div>${a.who?`<div class="card-ts">👤 ${esc(a.who)}</div>`:''}</div>`;
+    return up.map(e=>row(e,false)).join('')+(past.length?`<div class="sec-sep">${tr.past}</div>${past.map(e=>row(e,true)).join('')}`:'');
+  }
+  if(S.tab==='shop') {
+    const all=Object.entries(S.shop||{});
+    if(!all.length) return `<div class="empty"><span class="empty-ico">🛒</span>${tr.es}</div>`;
+    const pend=all.filter(([,i])=>!i.done), done=all.filter(([,i])=>i.done);
+    const row=([id,i])=>`<div class="shop-row${i.done?' done':''}"><div class="chk${i.done?' on':''}" onclick="toggleItem('${id}')">${i.done?'✓':''}</div><span class="shop-name">${esc(i.name)}</span><button class="shop-x" onclick="delItem('${id}')">✕</button></div>`;
+    return(done.length?`<button class="clear-btn" onclick="clearChecked()">🗑 ${tr.clear}</button>`:'')+pend.map(row).join('')+(done.length?`<div class="sec-sep">${tr.checked}</div>${done.map(row).join('')}`:'');
+  }
+  return '';
+}
+
+// ── SWITCH TAB ─────────────────────────────────────────────────────────────
+function switchTab(tab){ S.tab=tab; if(S.modal) closeModal(); else render(); }
+
+// ── LANG ───────────────────────────────────────────────────────────────────
+async function toggleLang() {
+  S.lang = S.lang==='it'?'ro':'it';
+  if(S.modal) openModal(S.modal); else render();
+  saveCache();
+  try { await fbPut('settings/lang', S.lang); } catch{}
+}
+
+// ── CRUD — NOTES ───────────────────────────────────────────────────────────
+async function addNote() {
+  const title=getVal('f-title');
+  if(!title){ blink('f-title'); return; }
+  const id=uid(), note={title, body:getVal('f-body'), ts:Date.now()};
+  S.notes[id]=note; saveCache(); closeModal(); toast('✓');
+  try { await fbPut(`notes/${id}`, note); } catch{ toast('⚠ offline'); }
+}
+async function delNote(id){ delete S.notes[id]; render(); saveCache(); try{await fbDel(`notes/${id}`);}catch{} }
+
+// ── CRUD — APPOINTMENTS ────────────────────────────────────────────────────
+async function addAppt() {
+  const title=getVal('f-title'), date=getVal('f-date');
+  if(!title){ blink('f-title'); return; }
+  if(!date){ blink('f-date'); return; }
+  const id=uid(), appt={title, date, time:getVal('f-time'), who:getVal('f-who'), ts:Date.now()};
+  S.appts[id]=appt; saveCache(); closeModal(); toast('✓');
+  try { await fbPut(`appts/${id}`, appt); } catch{ toast('⚠ offline'); }
+}
+async function delAppt(id){ delete S.appts[id]; render(); saveCache(); try{await fbDel(`appts/${id}`);}catch{} }
+
+// ── CRUD — SHOPPING ────────────────────────────────────────────────────────
+async function addItem() {
+  const inp=document.getElementById('f-name');
+  const name=inp?.value?.trim();
+  if(!name){ blink('f-name'); return; }
+  const id=uid(), item={name, done:false};
+  S.shop[id]=item; saveCache();
+  inp.value=''; inp.style.borderColor=''; inp.focus();
+  toast('✓ '+name);
+  try { await fbPut(`shop/${id}`, item); } catch{}
+}
+async function toggleItem(id) {
+  if(!S.shop[id]) return;
+  S.shop[id].done=!S.shop[id].done;
+  render(); saveCache();
+  try { await fbPatch(`shop/${id}`, {done:S.shop[id].done}); } catch{}
+}
+async function delItem(id){ delete S.shop[id]; render(); saveCache(); try{await fbDel(`shop/${id}`);}catch{} }
+async function clearChecked() {
+  const ids=Object.keys(S.shop).filter(id=>S.shop[id].done);
+  ids.forEach(id=>delete S.shop[id]);
+  render(); saveCache();
+  await Promise.all(ids.map(id=>fbDel(`shop/${id}`).catch(()=>{})));
+}
+
+// ── MODAL ──────────────────────────────────────────────────────────────────
+function getModalHTML(type) {
+  const tr=t(), it=S.lang==='it';
+  if(type==='notes') return `<div class="modal-title">📝 ${tr.new_note}</div><div class="fld"><label>${tr.t_note}</label><input id="f-title" type="text" autocomplete="off" onkeydown="if(event.key==='Enter')addNote()"></div><div class="fld"><label>Testo / Text</label><textarea id="f-body" placeholder="${tr.t_txt}"></textarea></div><div class="m-btns"><button class="btn-cancel" onclick="closeModal()">${tr.cancel}</button><button class="btn-ok" style="background:${FILL.notes}" onclick="addNote()">${tr.save}</button></div>`;
+  if(type==='appts') return `<div class="modal-title">📅 ${tr.new_appt}</div><div class="fld"><label>${tr.t_appt}</label><input id="f-title" type="text" autocomplete="off"></div><div class="fld-row"><div class="fld"><label>${tr.t_date}</label><input id="f-date" type="date"></div><div class="fld"><label>${tr.t_time}</label><input id="f-time" type="time"></div></div><div class="fld"><label>${tr.t_who}</label><input id="f-who" type="text" placeholder="${it?'es. Tutta la famiglia':'ex. Toată familia'}" autocomplete="off" onkeydown="if(event.key==='Enter')addAppt()"></div><div class="m-btns"><button class="btn-cancel" onclick="closeModal()">${tr.cancel}</button><button class="btn-ok" style="background:${FILL.appts}" onclick="addAppt()">${tr.save}</button></div>`;
+  if(type==='shop') return `<div class="modal-title">🛒 ${tr.new_item}</div><div class="fld"><label>${it?'Articolo':'Produs'}</label><input id="f-name" type="text" placeholder="${it?'es. Latte, Pane, Mele...':'ex. Lapte, Pâine, Mere...'}" autocomplete="off" onkeydown="if(event.key==='Enter')addItem()"></div><div class="m-btns"><button class="btn-cancel" onclick="closeModal()">${tr.close}</button><button class="btn-ok" style="background:${FILL.shop}" onclick="addItem()">${tr.add}</button></div>`;
+  if(type==='settings') { const tr2=t(); return `<div class="modal-title">⚙ ${tr2.sett}</div><div class="set-row"><span class="set-lbl">${tr2.s_db}</span><span class="set-val">${esc(CFG.dbUrl)}</span></div><div class="set-row"><span class="set-lbl">${tr2.s_code}</span><span class="set-val">${esc(CFG.code)}</span></div><div class="set-row"><span class="set-lbl">Sync</span><span class="set-val" style="color:${S.online?'#138A76':'#DC2626'}">${S.online?tr2.s_ok:tr2.s_offline}</span></div><div class="m-btns" style="margin-top:16px"><button class="btn-cancel" onclick="closeModal()">Chiudi / Închide</button></div><button class="set-danger" onclick="resetApp()">${tr2.s_reset}</button>`; }
+  return '';
+}
+
+function openModal(type) {
+  const ov=document.getElementById('app-ov');
+  ov.innerHTML=`<div class="ov-bg" onclick="if(event.target===this)closeModal()"><div class="modal">${getModalHTML(type)}</div></div>`;
+  ov.style.display='block'; S.modal=type;
+  setTimeout(()=>ov.querySelector('input')?.focus(), 60);
+}
+function closeModal() {
+  document.getElementById('app-ov').style.display='none';
+  document.getElementById('app-ov').innerHTML='';
+  S.modal=null; render();
+}
+
+// ── HELPERS ────────────────────────────────────────────────────────────────
+function getVal(id){ return document.getElementById(id)?.value?.trim()||''; }
+function blink(id){ const el=document.getElementById(id); if(!el)return; el.style.borderColor='#DC2626'; el.focus(); setTimeout(()=>el.style.borderColor='',1500); }
+
+let _tt;
+function toast(msg){ const el=document.getElementById('toast'); el.textContent=msg; el.classList.add('show'); clearTimeout(_tt); _tt=setTimeout(()=>el.classList.remove('show'),1800); }
+
+// ── INIT ───────────────────────────────────────────────────────────────────
+CFG = JSON.parse(localStorage.getItem('fam-cfg')||'null');
+if(CFG) bootApp(); else showSetup();
+</script>
+</body>
+</html>
